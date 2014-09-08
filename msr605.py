@@ -31,7 +31,8 @@ class MSR605(serial.Serial):
     TRACK_SENTINELS = (('%', '?'), (';', '?'), (';', '?'))
 
     def __init__(self, dev, test=True):
-        super(MSR605, self).__init__(dev, 9600, 8, serial.PARITY_NONE, timeout=10)
+        super(MSR605, self).__init__(dev, 9600, 8, serial.PARITY_NONE, timeout=120)
+
         self.reset()
         if test:
             self.communication_test()
@@ -158,9 +159,9 @@ class MSR605(serial.Serial):
         self._read_status()
 
     def select_bpi(self, t1_density, t2_density, t3_density):
-        self._send_command('\x62', t1_density and '\xD2' or '\x4B')
+        self._send_command('\x62', t2_density and '\xD2' or '\x4B')
         self._read_status()
-        self._send_command('\x62', t2_density and '\xA1' or '\xA0')
+        self._send_command('\x62', t1_density and '\xA1' or '\xA0')
         self._read_status()
         self._send_command('\x62', t3_density and '\xC1' or '\xC0')
         self._read_status()
